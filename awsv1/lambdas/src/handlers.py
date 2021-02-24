@@ -1,5 +1,11 @@
 def handler(event, context):
     print(event)
+
     return {
-        "success": True,
+        "isBase64Encoded": False,
+        "statusCode": 200,
+        "headers": None,
+        "body": {
+            "success": True,
+        },
     }

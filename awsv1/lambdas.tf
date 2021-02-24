@@ -21,6 +21,7 @@ locals {
 EOF
 }
 
+
 module "lambda_service" {
   source = "terraform-aws-modules/lambda/aws"
 
@@ -47,7 +48,7 @@ module "lambda_service" {
   allowed_triggers = {
     APIGatewayAny = {
       service    = "apigateway"
-      source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${module.api_gateway.this_apigatewayv2_api_id}/*/*/*"
+      source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.api.id}/*/*/*"
     }
   }
 
