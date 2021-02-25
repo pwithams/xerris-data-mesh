@@ -1,22 +1,76 @@
 # API Gateway
 resource "aws_api_gateway_rest_api" "api" {
   body = jsonencode({
+
     openapi = "3.0.1"
     info = {
       title   = "api"
-      version = "1.1"
+      version = "1.3"
     }
+
     paths = {
-      "/path1" = {
+      "/create_schema/" = {
         post = {
+          security = [
+            {
+              sigv4 = []
+            }
+          ]
           x-amazon-apigateway-integration = {
             httpMethod           = "POST"
             payloadFormatVersion = "1.0"
             type                 = "AWS_PROXY"
             uri                  = module.lambda_service.this_lambda_function_invoke_arn
-          } }
+          }
+          requestBody = {
+            content = {
+              "application/json" = {
+                schema = {
+                  "$ref" = "#/components/schemas/Body"
+                }
+              }
+            }
+          }
+        }
+      }
+
+      "/sink_data/" = {
+        post = {
+          security = [
+            {
+              sigv4 = []
+            }
+          ]
+          x-amazon-apigateway-integration = {
+            httpMethod           = "POST"
+            payloadFormatVersion = "1.0"
+            type                 = "AWS_PROXY"
+            uri                  = module.lambda_service.this_lambda_function_invoke_arn
+        } }
       }
     }
+
+    components = {
+      securitySchemes = {
+        sigv4 = {
+          type                         = "apiKey"
+          name                         = "Authorization"
+          in                           = "header"
+          x-amazon-apigateway-authtype = "awsSigv4"
+        }
+      }
+      schemas = {
+        Body = {
+          type = "object",
+          properties = {
+            key = {
+              type = "string"
+            }
+          }
+        }
+      }
+    }
+
   })
 
   name = "api"
