@@ -1,5 +1,6 @@
-def handler(event, context):
+def sink_data(event, context):
     print(event)
+    print(event["body"])
 
     return {
         "isBase64Encoded": False,

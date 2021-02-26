@@ -1,0 +1,10 @@
+[
+  {
+    "name": "example_dataset",
+    "schema": {
+      "id": "integer",
+      "date": "timestamp",
+      "description": "string"
+    }
+  }
+]

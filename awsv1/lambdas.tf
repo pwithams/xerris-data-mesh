@@ -1,7 +1,5 @@
 locals {
 
-  lambda_container_full_uri = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/${var.lambda_container_full_name}:${var.container_tag}"
-
   lambda_policy = <<EOF
 {
     "Version": "2012-10-17",
@@ -21,29 +19,21 @@ locals {
 EOF
 }
 
-
-module "lambda_service" {
+module "lambda_sink_data" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name        = "${var.resource_prefix}-mainService"
-  description          = "Main lambda"
-  image_config_command = ["handlers.handler"]
 
-  environment_variables = {
-    STREAM_NAME = "test"
-  }
+  function_name = "${var.resource_prefix}-sinkData"
+  description   = "Handles data ingest"
+  handler       = "handlers.sink_data"
+  runtime       = "python3.8"
 
-  memory_size = 512
-  timeout     = 20
+  source_path = "lambdas"
 
-  create_package = false
-
-  image_uri    = local.lambda_container_full_uri
-  package_type = "Image"
-
-  attach_cloudwatch_logs_policy = true
-  attach_policy_json            = true
-  policy_json                   = local.lambda_policy
+  cloudwatch_logs_retention_in_days = 1
+  attach_cloudwatch_logs_policy     = true
+  attach_policy_json                = true
+  policy_json                       = local.lambda_policy
 
   allowed_triggers = {
     APIGatewayAny = {
@@ -52,7 +42,29 @@ module "lambda_service" {
     }
   }
 
+  layers = [
+    module.lambda_layer_local.this_lambda_layer_arn,
+  ]
+
   publish = true
 
   tags = var.project_tags
+}
+
+module "lambda_layer_local" {
+  source = "terraform-aws-modules/lambda/aws"
+
+  create_layer = true
+
+  layer_name          = "${var.resource_prefix}-lambdaLayer"
+  description         = "Layer for Lambda"
+  compatible_runtimes = ["python3.8"]
+
+  source_path = [
+    {
+      path             = "lambdas",
+      pip_requirements = true
+      prefix_in_zip    = "python/lib/python3.8/site-packages",
+    }
+  ]
 }
