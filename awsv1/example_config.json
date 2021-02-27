@@ -1,0 +1,16 @@
+{
+  "schemas": {
+    [
+      "name": "schema1",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int"
+        },
+        {
+          "name": "value",
+          "type": "double"
+        }
+      ]
+  }
+}

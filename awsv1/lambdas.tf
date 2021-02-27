@@ -28,12 +28,23 @@ module "lambda_sink_data" {
   handler       = "handlers.sink_data"
   runtime       = "python3.8"
 
-  source_path = "lambdas"
+  source_path = [
+    {
+      path = "lambdas"
+      patterns = [
+        "!layer/.*",
+      ]
+    }
+  ]
 
   cloudwatch_logs_retention_in_days = 1
   attach_cloudwatch_logs_policy     = true
   attach_policy_json                = true
   policy_json                       = local.lambda_policy
+
+  environment_variables = {
+    STREAM_NAME = aws_kinesis_firehose_delivery_stream.firehose.name
+  }
 
   allowed_triggers = {
     APIGatewayAny = {
@@ -59,10 +70,11 @@ module "lambda_layer_local" {
   layer_name          = "${var.resource_prefix}-lambdaLayer"
   description         = "Layer for Lambda"
   compatible_runtimes = ["python3.8"]
+  runtime             = "python3.8"
 
   source_path = [
     {
-      path             = "lambdas",
+      path             = "lambdas/layer",
       pip_requirements = true
       prefix_in_zip    = "python/lib/python3.8/site-packages",
     }

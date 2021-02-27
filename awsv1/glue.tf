@@ -12,6 +12,39 @@ resource "aws_glue_crawler" "data_crawler" {
   }
 }
 
+
+resource "aws_glue_catalog_table" "data_schema" {
+  name          = replace("${var.resource_prefix}-schema", "-", "_")
+  database_name = aws_glue_catalog_database.glue_database.name
+
+  table_type = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+
+    columns {
+      name = "id"
+      type = "int"
+    }
+
+    columns {
+      name = "name"
+      type = "string"
+    }
+
+    columns {
+      name = "value"
+      type = "double"
+    }
+
+    columns {
+      name = "ts"
+      type = "timestamp"
+    }
+
+  }
+}
+
+
 resource "aws_iam_role" "glue_role" {
   name               = "${var.resource_prefix}-glue-role"
   assume_role_policy = data.aws_iam_policy_document.glue_assume_role_policy.json
