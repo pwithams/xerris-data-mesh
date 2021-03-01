@@ -14,33 +14,20 @@ resource "aws_glue_crawler" "data_crawler" {
 
 
 resource "aws_glue_catalog_table" "data_schema" {
-  name          = replace("${var.resource_prefix}-schema", "-", "_")
+  for_each      = var.table_info
+  name          = replace("${var.resource_prefix}-schema-${each.value.table_name}", "-", "_")
   database_name = aws_glue_catalog_database.glue_database.name
 
   table_type = "EXTERNAL_TABLE"
 
   storage_descriptor {
-
-    columns {
-      name = "id"
-      type = "int"
+    dynamic "columns" {
+      for_each = each.value.column_details
+      content {
+        name = columns.value.name
+        type = columns.value.type
+      }
     }
-
-    columns {
-      name = "name"
-      type = "string"
-    }
-
-    columns {
-      name = "value"
-      type = "double"
-    }
-
-    columns {
-      name = "ts"
-      type = "timestamp"
-    }
-
   }
 }
 

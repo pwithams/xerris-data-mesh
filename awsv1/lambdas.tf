@@ -43,7 +43,7 @@ module "lambda_sink_data" {
   policy_json                       = local.lambda_policy
 
   environment_variables = {
-    STREAM_NAME = aws_kinesis_firehose_delivery_stream.firehose.name
+    "STREAM_NAMES" = jsonencode([for g in aws_kinesis_firehose_delivery_stream.firehose : jsonencode(g.name)])
   }
 
   allowed_triggers = {

@@ -23,6 +23,40 @@ variable "project_name" {
 
 # variables with defaults
 
+variable "table_info" {
+  type = map(any)
+
+  default = {
+    t1 = {
+      table_name = "id1"
+      column_details = [
+        {
+          name = "name"
+          type = "string"
+        },
+        {
+          name = "value"
+          type = "double"
+        }
+      ]
+    },
+    t2 = {
+      table_name = "id2"
+      column_details = [
+        {
+          name = "name"
+          type = "string"
+        },
+        {
+          name = "value"
+          type = "double"
+        }
+      ]
+
+    },
+  }
+}
+
 variable "aws_region" {
   type    = string
   default = "us-east-1"

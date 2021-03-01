@@ -1,5 +1,6 @@
 resource "aws_kinesis_firehose_delivery_stream" "firehose" {
-  name        = "${var.resource_prefix}-firehose-stream"
+  for_each    = var.table_info
+  name        = "${var.resource_prefix}-firehose-stream-${each.value.table_name}"
   destination = "extended_s3"
 
   extended_s3_configuration {
@@ -26,9 +27,9 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose" {
       }
 
       schema_configuration {
-        database_name = aws_glue_catalog_table.data_schema.database_name
+        database_name = aws_glue_catalog_table.data_schema[each.key].database_name
         role_arn      = aws_iam_role.firehose_role.arn
-        table_name    = aws_glue_catalog_table.data_schema.name
+        table_name    = aws_glue_catalog_table.data_schema[each.key].name
       }
     }
   }
