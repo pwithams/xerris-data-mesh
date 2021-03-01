@@ -3,6 +3,12 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose" {
   name        = "${var.resource_prefix}-firehose-stream-${each.value.schema_name}"
   destination = "extended_s3"
 
+  # encryption settings inside firehose itself
+  server_side_encryption {
+    enabled  = true
+    key_type = "AWS_OWNED_CMK"
+  }
+
   extended_s3_configuration {
     role_arn   = aws_iam_role.firehose_role.arn
     bucket_arn = "arn:aws:s3:::${var.bucket_name}"
@@ -12,6 +18,9 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose" {
 
     # Must be at least 64
     buffer_size = 128
+
+    # key used to encrypt data in S3
+    kms_key_arn = data.aws_kms_key.s3_key.arn
 
     data_format_conversion_configuration {
       input_format_configuration {
@@ -69,6 +78,20 @@ data "aws_iam_policy_document" "firehose_custom_policy" {
       "arn:aws:s3:::${var.bucket_name}/*",
     ]
   }
+
+  statement {
+    actions = [
+      "kms:*",
+      "kms:Encrypt",
+      "kms:DescribeKey",
+      "kms:GenerateDataKey",
+    ]
+
+    resources = [
+      data.aws_kms_key.s3_key.arn,
+    ]
+  }
+
 }
 
 data "aws_iam_policy" "firehose_service_role" {

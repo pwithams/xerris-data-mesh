@@ -67,6 +67,20 @@ data "aws_iam_policy_document" "glue_custom_policy" {
       "arn:aws:s3:::${var.bucket_name}/*",
     ]
   }
+
+  statement {
+    actions = [
+      "kms:*",
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:GenerateDataKey",
+    ]
+
+    resources = [
+      data.aws_kms_key.s3_key.arn,
+    ]
+  }
+
 }
 
 data "aws_iam_policy" "glue_service_role" {

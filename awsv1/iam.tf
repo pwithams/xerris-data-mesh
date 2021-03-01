@@ -53,13 +53,24 @@ resource "aws_iam_policy" "athena_access_policy" {
         Action = [
           "glue:*",
           "s3:*",
-          "kms:*",
         ]
         Effect = "Allow"
         Resource = [
           "*",
         ]
       },
+      {
+        Action = [
+          "kms:*",
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "kms:GenerateDataKey",
+        ]
+        Effect = "Allow"
+        Resource = [
+          data.aws_kms_key.s3_key.arn,
+        ]
+      }
     ]
   })
 }
