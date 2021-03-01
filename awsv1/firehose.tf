@@ -1,14 +1,14 @@
 resource "aws_kinesis_firehose_delivery_stream" "firehose" {
-  for_each    = var.table_info
-  name        = "${var.resource_prefix}-firehose-stream-${each.value.table_name}"
+  for_each    = var.schemas
+  name        = "${var.resource_prefix}-firehose-stream-${each.value.schema_name}"
   destination = "extended_s3"
 
   extended_s3_configuration {
     role_arn   = aws_iam_role.firehose_role.arn
     bucket_arn = "arn:aws:s3:::${var.bucket_name}"
 
-    prefix              = "${var.data_path}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
-    error_output_prefix = "${var.data_path}/error/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
+    prefix              = "${var.data_path}/${each.value.schema_name}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
+    error_output_prefix = "${var.data_path}/error/${each.value.schema_name}/!{firehose:error-output-type}/year=!{timestamp:YYYY}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/"
 
     # Must be at least 64
     buffer_size = 128

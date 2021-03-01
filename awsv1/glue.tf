@@ -3,26 +3,27 @@ resource "aws_glue_catalog_database" "glue_database" {
 }
 
 resource "aws_glue_crawler" "data_crawler" {
+  for_each      = var.schemas
   database_name = aws_glue_catalog_database.glue_database.name
-  name          = "${var.resource_prefix}-data-crawler"
+  name          = "${var.resource_prefix}-data-crawler-${each.value.schema_name}"
   role          = aws_iam_role.glue_role.arn
 
   s3_target {
-    path = "s3://${var.bucket_name}/${var.data_path}/"
+    path = "s3://${var.bucket_name}/${var.data_path}/${each.value.schema_name}/"
   }
 }
 
 
 resource "aws_glue_catalog_table" "data_schema" {
-  for_each      = var.table_info
-  name          = replace("${var.resource_prefix}-schema-${each.value.table_name}", "-", "_")
+  for_each      = var.schemas
+  name          = replace(each.value.schema_name, "-", "_")
   database_name = aws_glue_catalog_database.glue_database.name
 
   table_type = "EXTERNAL_TABLE"
 
   storage_descriptor {
     dynamic "columns" {
-      for_each = each.value.column_details
+      for_each = each.value.schema_details
       content {
         name = columns.value.name
         type = columns.value.type

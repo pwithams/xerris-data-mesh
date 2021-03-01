@@ -20,42 +20,21 @@ variable "project_name" {
   type = string
 }
 
+variable "schemas" {
+  type = map(object({
+    schema_name = string
+    schema_details = list(
+      object({
+        name = string
+        type = string
+      })
+    )
+    })
+  )
+}
+
 
 # variables with defaults
-
-variable "table_info" {
-  type = map(any)
-
-  default = {
-    t1 = {
-      table_name = "id1"
-      column_details = [
-        {
-          name = "name"
-          type = "string"
-        },
-        {
-          name = "value"
-          type = "double"
-        }
-      ]
-    },
-    t2 = {
-      table_name = "id2"
-      column_details = [
-        {
-          name = "name"
-          type = "string"
-        },
-        {
-          name = "value"
-          type = "double"
-        }
-      ]
-
-    },
-  }
-}
 
 variable "aws_region" {
   type    = string
