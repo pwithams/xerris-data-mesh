@@ -3,3 +3,4 @@ venv
 *.tfvars
 builds
 *.swp
+__pycache__

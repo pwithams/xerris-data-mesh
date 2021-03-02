@@ -25,14 +25,16 @@ module "lambda_sink_data" {
 
   function_name = "${var.resource_prefix}-sinkData"
   description   = "Handles data ingest"
-  handler       = "handlers.sink_data"
+  handler       = "handlers.handlers.sink_data"
   runtime       = "python3.8"
 
   source_path = [
     {
       path = "lambdas"
       patterns = [
-        "!layer/.*",
+        "!.*",
+        ".*\\.py",
+        "!tests/.*",
       ]
     }
   ]
@@ -45,8 +47,9 @@ module "lambda_sink_data" {
   environment_variables = {
     STREAM_NAMES = jsonencode(
       [for g in aws_kinesis_firehose_delivery_stream.firehose : {
-        table_name    = g.extended_s3_configuration[0].data_format_conversion_configuration[0].schema_configuration[0].table_name,
         firehose_name = g.name,
+        database_name    = g.extended_s3_configuration[0].data_format_conversion_configuration[0].schema_configuration[0].database_name,
+        table_name    = g.extended_s3_configuration[0].data_format_conversion_configuration[0].schema_configuration[0].table_name,
         }
       ]
     )
