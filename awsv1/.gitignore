@@ -4,3 +4,4 @@ venv
 builds
 *.swp
 __pycache__
+*.pyc
