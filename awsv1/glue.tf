@@ -7,10 +7,18 @@ resource "aws_glue_crawler" "data_crawler" {
   database_name = aws_glue_catalog_database.glue_database.name
   name          = "${var.resource_prefix}-data-crawler-${each.value.schema_name}"
   role          = aws_iam_role.glue_role.arn
+  schedule      = "cron(5 * * * ? *)"
 
-  s3_target {
-    path = "s3://${var.bucket_name}/${var.data_path}/${each.value.schema_name}/"
+  catalog_target {
+    database_name = aws_glue_catalog_database.glue_database.name
+    tables        = [aws_glue_catalog_table.data_schema[each.key].name]
   }
+
+  schema_change_policy {
+    delete_behavior = "LOG"
+  }
+
+  tags = var.project_tags
 }
 
 
@@ -22,6 +30,19 @@ resource "aws_glue_catalog_table" "data_schema" {
   table_type = "EXTERNAL_TABLE"
 
   storage_descriptor {
+    location = "s3://${var.bucket_name}/${var.data_path}/${each.value.schema_name}/"
+
+    input_format  = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+
+      parameters = {
+        "serialization.format" = 1
+      }
+    }
+
     dynamic "columns" {
       for_each = each.value.schema_details
       content {
@@ -36,6 +57,7 @@ resource "aws_glue_catalog_table" "data_schema" {
 resource "aws_iam_role" "glue_role" {
   name               = "${var.resource_prefix}-glue-role"
   assume_role_policy = data.aws_iam_policy_document.glue_assume_role_policy.json
+  tags = var.project_tags
 }
 
 data "aws_iam_policy_document" "glue_assume_role_policy" {
@@ -47,7 +69,6 @@ data "aws_iam_policy_document" "glue_assume_role_policy" {
       identifiers = ["glue.amazonaws.com"]
     }
   }
-
 }
 
 resource "aws_iam_role_policy" "glue_custom_policy" {
@@ -80,7 +101,6 @@ data "aws_iam_policy_document" "glue_custom_policy" {
       data.aws_kms_key.s3_key.arn,
     ]
   }
-
 }
 
 data "aws_iam_policy" "glue_service_role" {

@@ -2,22 +2,32 @@
 
 variable "aws_account_id" {
   type = string
+  description = "The account ID for the AWS environment where the project will be deployed"
+}
+
+variable "bucket_name2" {
+  type = string
+  default = "tst-auto-bucket-pw-123"
 }
 
 variable "bucket_name" {
   type = string
+  description = "The S3 bucket where the data will be stored, as well as query results"
 }
 
 variable "stage" {
   type = string
+  description = "Indicates which stage the deployment is for, such as dev or prod"
 }
 
 variable "resource_prefix" {
   type = string
+  description = "The prefix for all resource names to allow them to be easily identified"
 }
 
 variable "project_name" {
   type = string
+  description = "The unique name for this deployment"
 }
 
 variable "schemas" {
@@ -31,6 +41,7 @@ variable "schemas" {
     )
     })
   )
+  description = "A map of schemas to support - each will create its own glue table and firehose stream"
 }
 
 
@@ -39,26 +50,43 @@ variable "schemas" {
 variable "aws_region" {
   type    = string
   default = "us-east-1"
+  description = "The AWS region to deploy resources to"
 }
 
 variable "post_path" {
   type    = string
   default = "/sink_data/"
+  description = "The path used by the API gateway endpoint"
 }
 
 variable "api_version" {
   type    = string
   default = "1.0"
+  description = "The current API gateway version"
 }
 
 variable "api_stage_name" {
   type    = string
   default = "datamesh"
+  description = "The name for the main API gateway stage"
 }
 
 variable "data_path" {
   type    = string
   default = "data"
+  description = "The prefix used for the data stored in S3"
+}
+
+variable "automate_bucket_creation" {
+  type = bool
+  default = false
+  description = "Can be enabled to use a python script to automatically create an S3 bucket not managed by Terraform"
+}
+
+variable "python_name" {
+  type    = string
+  default = "python"
+  description = "The python executable name to use - may need to be set as python3 in some cases"
 }
 
 variable "project_tags" {

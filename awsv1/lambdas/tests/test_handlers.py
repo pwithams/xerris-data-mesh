@@ -9,7 +9,7 @@ try:
 except KeyError:
     os.environ[
         "STREAM_NAMES"
-    ] = '[{"firehose_name":"data-mesh-dev-firehose-stream-data_product1","table_name":"data_product1"},{"firehose_name":"data-mesh-dev-firehose-stream-data_product2","table_name":"data_product2"}]'
+    ] = '[{"firehose_name":"data-mesh-dev-firehose-stream-data_product1","table_name":"data_product1", "database_name":"test1"},{"firehose_name":"data-mesh-dev-firehose-stream-data_product2","table_name":"data_product2", "database_name":"test2"}]'
     from handlers import handlers
 
 

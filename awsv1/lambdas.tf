@@ -48,7 +48,7 @@ module "lambda_sink_data" {
     STREAM_NAMES = jsonencode(
       [for g in aws_kinesis_firehose_delivery_stream.firehose : {
         firehose_name = g.name,
-        database_name    = g.extended_s3_configuration[0].data_format_conversion_configuration[0].schema_configuration[0].database_name,
+        database_name = g.extended_s3_configuration[0].data_format_conversion_configuration[0].schema_configuration[0].database_name,
         table_name    = g.extended_s3_configuration[0].data_format_conversion_configuration[0].schema_configuration[0].table_name,
         }
       ]
@@ -88,4 +88,6 @@ module "lambda_layer_local" {
       prefix_in_zip    = "python/lib/python3.8/site-packages",
     }
   ]
+
+  tags = var.project_tags
 }

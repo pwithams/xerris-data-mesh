@@ -42,11 +42,14 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose" {
       }
     }
   }
+
+  tags = var.project_tags
 }
 
 resource "aws_iam_role" "firehose_role" {
   name               = "${var.resource_prefix}-firehose-role"
   assume_role_policy = data.aws_iam_policy_document.firehose_assume_role_policy.json
+  tags = var.project_tags
 }
 
 data "aws_iam_policy_document" "firehose_assume_role_policy" {
@@ -91,7 +94,6 @@ data "aws_iam_policy_document" "firehose_custom_policy" {
       data.aws_kms_key.s3_key.arn,
     ]
   }
-
 }
 
 data "aws_iam_policy" "firehose_service_role" {
