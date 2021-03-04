@@ -9,6 +9,7 @@ This module creates the basic underlying infrastructure to allow easy, serverles
 The following are required before deploying this module:
  - an AWS account
  - CLI user credentials with permission to deploy the specified resources
+ - if using the automatic bucket creation ability, you must have python3.x and boto3 installed - if not you can create the bucket manually instead
 
 ### After deployment
 
