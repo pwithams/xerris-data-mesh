@@ -1,9 +1,6 @@
 import sys
-import json
 import platform
-
-BUCKET_NAME = "data-mesh-pwithams-123"
-KMS_KEY_ARN = "test"
+import json
 
 
 class UnsupportedPythonVersion(Exception):
@@ -61,6 +58,14 @@ def create_s3_bucket(bucket_name):
 
 
 def main():
+    """Terraform external data source.
+
+    Terraform external data sources pass params via stdin json
+    strings and return values are json strings via stdout.
+
+    Note that all stdout values are taken as return values so there
+    should be only one print statement at the end with valid json.
+    """
     for line in sys.stdin:
         terraform_input = json.loads(line)
         break
@@ -75,4 +80,5 @@ def main():
     print(json.dumps(result))
 
 
-main()
+if __name__ == "__main__":
+    main()

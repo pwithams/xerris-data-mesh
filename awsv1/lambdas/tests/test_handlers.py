@@ -49,7 +49,7 @@ class TestHandlers(unittest.TestCase):
                 "id": 1,
                 "name": "test",
                 "value": 123.45,
-                "timestamp": datetime.datetime.now().isoformat() + "Z",
+                "timestamp": str(int(datetime.datetime.now().timestamp())),
             }
         ]
 
@@ -108,6 +108,34 @@ class TestHandlers(unittest.TestCase):
             {
                 "id": 1,
                 "timestamp": "2020/1/1",
+            }
+        ]
+
+        test_event = {"body": json.dumps({"schema": schema, "data": data})}
+
+        handlers.sink_data(test_event, None)
+        self.assertEqual(len(self.firehose_send_mock.mock_calls), 0)
+
+    def test_handler_invalid_schema_iso_time(self):
+        schema_definition = [
+            {
+                "Name": "id",
+                "Type": "int",
+            },
+            {
+                "Name": "timestamp",
+                "Type": "timestamp",
+            },
+        ]
+        glue_mock = mock.MagicMock(return_value=schema_definition)
+        handlers.get_glue_table_schema = glue_mock
+
+        schema = "data_product1"
+        firehose = "data-mesh-dev-firehose-stream-data_product1"
+        data = [
+            {
+                "id": 1,
+                "timestamp": datetime.datetime.now().isoformat() + "Z",
             }
         ]
 

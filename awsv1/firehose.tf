@@ -25,7 +25,7 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose" {
     data_format_conversion_configuration {
       input_format_configuration {
         deserializer {
-          hive_json_ser_de {}
+          open_x_json_ser_de {}
         }
       }
 
@@ -49,7 +49,7 @@ resource "aws_kinesis_firehose_delivery_stream" "firehose" {
 resource "aws_iam_role" "firehose_role" {
   name               = "${var.resource_prefix}-firehose-role"
   assume_role_policy = data.aws_iam_policy_document.firehose_assume_role_policy.json
-  tags = var.project_tags
+  tags               = var.project_tags
 }
 
 data "aws_iam_policy_document" "firehose_assume_role_policy" {

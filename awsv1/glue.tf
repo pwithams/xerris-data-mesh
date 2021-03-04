@@ -51,13 +51,33 @@ resource "aws_glue_catalog_table" "data_schema" {
       }
     }
   }
+
+  partition_keys {
+    name = "year"
+    type = "int"
+  }
+
+  partition_keys {
+    name = "month"
+    type = "int"
+  }
+
+  partition_keys {
+    name = "day"
+    type = "int"
+  }
+
+  partition_keys {
+    name = "hour"
+    type = "int"
+  }
 }
 
 
 resource "aws_iam_role" "glue_role" {
   name               = "${var.resource_prefix}-glue-role"
   assume_role_policy = data.aws_iam_policy_document.glue_assume_role_policy.json
-  tags = var.project_tags
+  tags               = var.project_tags
 }
 
 data "aws_iam_policy_document" "glue_assume_role_policy" {

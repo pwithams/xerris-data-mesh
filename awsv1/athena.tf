@@ -11,7 +11,7 @@ resource "aws_athena_workgroup" "workgroup" {
 
       encryption_configuration {
         encryption_option = "SSE_KMS"
-        kms_key_arn = data.aws_kms_key.s3_key.arn
+        kms_key_arn       = data.aws_kms_key.s3_key.arn
       }
     }
   }

@@ -26,7 +26,6 @@ def sink_data(event, context):
     stream_name = get_stream_name(schema, STREAM_NAMES)
     if not stream_name:
         return SchemaDoesNotExistResponse().get_response()
-
     database_name = get_database_name(schema, STREAM_NAMES)
     schema_columns = get_glue_table_schema(database_name, schema)
 
@@ -75,31 +74,33 @@ def convert_type(type_name):
     raise KeyError(f"Cannot find type match for {type_name}")
 
 
+def is_datetime(field, value, error):
+    """Allows iso and timestamp strings, as well as integer timestamps, for s and ms."""
+    if isinstance(value, datetime.datetime):
+        return True
+
+    try:
+        datetime.datetime.fromisoformat(value.rstrip("Z"))
+        return True
+    except ValueError:
+        pass
+
+    try:
+        datetime.datetime.fromtimestamp(int(value))
+        return True
+    except ValueError:
+        pass
+
+    try:
+        datetime.datetime.fromtimestamp(int(value) / 1000)
+        return True
+    except ValueError:
+        pass
+
+    error(field, f"{value} is not a valid iso datetime or timestamp")
+
+
 def get_constraint_checker(type_name):
-    def is_datetime(field, value, error):
-        """Allows iso and timestamp strings, as well as integer timestamps."""
-        if isinstance(value, datetime.datetime):
-            return True
-
-        try:
-            datetime.datetime.fromisoformat(value.rstrip("Z"))
-            return True
-        except ValueError:
-            pass
-
-        try:
-            datetime.datetime.fromtimestamp(int(value))
-            return True
-        except ValueError:
-            pass
-
-        try:
-            datetime.datetime.fromtimestamp(int(value) / 1000)
-            return True
-        except ValueError:
-            pass
-
-        error(field, f"{value} is not a valid iso or timestamp string, or integer timestamp")
 
     mappings = {
         "custom_datetime": is_datetime,
