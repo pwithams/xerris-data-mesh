@@ -2,10 +2,6 @@
 
 This module creates the basic underlying infrastructure to allow easy, serverless, and scalable AWS data ingestion and storage that can be queried using Athena.
 
-## What this creates
-
-![Architecture](docs/architecture.png)
-
 ## Requirements
 
 ### Before deployment
@@ -103,3 +99,7 @@ IAM credentials are used for authentication, so assuming your credentials either
 If you're using a programming language, you can either sign the request yourself or use a helper module, such as https://pypi.org/project/aws-requests-auth/
 
 For more details about signing requests, see https://docs.aws.amazon.com/general/latest/gr/sigv4_signing.html
+
+## Architecture
+
+![Architecture](docs/architecture.png)
