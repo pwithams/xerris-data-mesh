@@ -1,6 +1,6 @@
 data "external" "example" {
   count   = var.automate_bucket_creation ? 1 : 0
-  program = [var.python_name, "${path.module}/create_s3_bucket.py"]
+  program = [var.s3_executable_name, var.s3_creation_script]
 
   query = {
     bucket_name = var.bucket_name

@@ -1,3 +1,14 @@
+"""
+S3 Creation Script
+
+This script creates a bucket and enables KMS encryption.
+
+It is used as a way to automate bucket creation while still allowing the S3 bucket
+to be decoupled from the main Terraform state.
+
+Note that the input to the program is JSON via stdin and the output is via stdout
+and must be valid JSON.
+"""
 import sys
 import platform
 import json
@@ -15,7 +26,8 @@ python_major_version = int(platform.python_version().split(".")[0])
 if python_major_version < 3:
     raise UnsupportedPythonVersion(
         (
-            "The python version should be 3.x - you can change the python executable by setting the python_name variable. "
+            "The python version should be 3.x - you can change the python executable by setting the s3_executable_name variable. "
+            "A custom S3 creation script can be used instead by specifying s3_executable_name and s3_creation_script variables. "
             "You can also create a bucket manually beforehand, specify the name as a variable, and set automate_bucket_creation = false"
         )
     )
@@ -27,6 +39,7 @@ except ImportError:
     raise Boto3PackageMissing(
         (
             "The boto3 python package is required to create Terraform independent S3 bucket. "
+            "A custom S3 creation script can be used instead by specifying s3_executable_name and s3_creation_script variables. "
             "You can also create a bucket manually beforehand, specify the name as a variable, and set automate_bucket_creation = false"
         )
     )

@@ -38,6 +38,18 @@ variable "automate_bucket_creation" {
   description = "Can be enabled to use a python script to automatically create an S3 bucket not managed by Terraform"
 }
 
+variable "s3_executable_name" {
+  type  = string
+  default = "python"
+  description = "The executable program required to run your custom S3 creation script"
+}
+
+variable "s3_creation_script" {
+  type = string
+  default = "${path.module}/create_s3_bucket.py"
+  description = "The file containing your custom S3 creation script - a Python script using boto3 is provided by default"
+}
+
 variable "post_path" {
   type        = string
   default     = "/sink_data/"
@@ -60,12 +72,6 @@ variable "data_path" {
   type        = string
   default     = "data"
   description = "The prefix used for the data stored in S3"
-}
-
-variable "python_name" {
-  type        = string
-  default     = "python"
-  description = "The python executable name to use - may need to be set as python3 in some cases"
 }
 
 variable "project_tags" {
