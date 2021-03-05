@@ -32,7 +32,7 @@ resource "aws_iam_policy" "api_access_policy" {
 
 resource "aws_iam_group" "athena_access" {
   name = "${var.resource_prefix}-athena-access-group"
-  path = "/datamesh/${var.project_name}/"
+  path = "/datamesh/${var.resource_prefix}/"
 }
 
 resource "aws_iam_group_policy_attachment" "athena_group_policy_attach" {

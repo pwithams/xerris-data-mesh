@@ -15,11 +15,6 @@ variable "resource_prefix" {
   description = "The prefix for all resource names to allow them to be easily identified"
 }
 
-variable "project_name" {
-  type        = string
-  description = "The unique name for this deployment"
-}
-
 variable "schemas" {
   type = map(object({
     schema_name = string
@@ -36,6 +31,12 @@ variable "schemas" {
 
 
 # variables with defaults
+
+variable "automate_bucket_creation" {
+  type        = bool
+  default     = false
+  description = "Can be enabled to use a python script to automatically create an S3 bucket not managed by Terraform"
+}
 
 variable "post_path" {
   type        = string
@@ -61,12 +62,6 @@ variable "data_path" {
   description = "The prefix used for the data stored in S3"
 }
 
-variable "automate_bucket_creation" {
-  type        = bool
-  default     = false
-  description = "Can be enabled to use a python script to automatically create an S3 bucket not managed by Terraform"
-}
-
 variable "python_name" {
   type        = string
   default     = "python"
@@ -74,9 +69,7 @@ variable "python_name" {
 }
 
 variable "project_tags" {
-  type = object({
-    project_name = string
-  })
+  type = map(string)
 
   default = {
     project_name = "data-mesh"
