@@ -27,10 +27,8 @@ module "xerris_data_mesh" {
   source = "github.com/pwithams/xerris-data-mesh/awsv1"
 
     # general project information
-    aws_account_id  = "353831065989"
     resource_prefix = "data-mesh-dev"
     stage           = "dev"
-    project_name    = "datameshv1"
 
     # s3 details
     bucket_name     = "data-mesh-pwithams-123"
@@ -71,6 +69,14 @@ module "xerris_data_mesh" {
     }
 }
 ```
+
+## S3 bucket creation
+
+When creating a bucket using Terraform, it will always be tied to the Terraform state. This is useful for most cases, but when using the bucket to store important data it poses the risk that the bucket may get deleted, such as when removing and reapplying the state. As a result, it is preferrable to keep the bucket decoupled from the infrastructure.
+
+However, it can still be nice to automate this process, and so by setting `automate_bucket_creation = true` a Python script will create a bucket with encryption for you. It is recommended to remove or set the statement to false once the bucket is created to avoid needlessly running the script each time.
+
+Note that the Python script uses `boto3` to create the bucket and so `python` must have access to this. If `python` does not point to python3.x you can specify `python_path = "python3"`. If you do not have Python or the required libraries available, you can disable automatic bucket creation and just manually create it instead.
 
 ## Posting data to the endpoint
 

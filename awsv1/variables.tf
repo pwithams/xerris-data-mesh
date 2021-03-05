@@ -1,10 +1,5 @@
 # variables with no defaults - must be specified in terraform.tfvars
 
-variable "aws_account_id" {
-  type        = string
-  description = "The account ID for the AWS environment where the project will be deployed"
-}
-
 variable "bucket_name" {
   type        = string
   description = "The S3 bucket where the data will be stored, as well as query results"
@@ -41,12 +36,6 @@ variable "schemas" {
 
 
 # variables with defaults
-
-variable "aws_region" {
-  type        = string
-  default     = "us-east-1"
-  description = "The AWS region to deploy resources to"
-}
 
 variable "post_path" {
   type        = string

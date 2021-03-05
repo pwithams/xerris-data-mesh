@@ -2,7 +2,7 @@
 
 resource "aws_iam_group" "api_access" {
   name = "${var.resource_prefix}-api-access-group"
-  path = "/datamesh/${var.project_name}/"
+  path = "/datamesh/${var.resource_prefix}/"
 }
 
 resource "aws_iam_group_policy_attachment" "group_policy_attach" {
@@ -12,7 +12,7 @@ resource "aws_iam_group_policy_attachment" "group_policy_attach" {
 
 resource "aws_iam_policy" "api_access_policy" {
   name        = "${var.resource_prefix}-api-access-policy"
-  path        = "/datamesh/${var.project_name}/"
+  path        = "/datamesh/${var.resource_prefix}/"
   description = "Policy that allows API access"
 
   policy = jsonencode({
@@ -23,8 +23,7 @@ resource "aws_iam_policy" "api_access_policy" {
         ]
         Effect = "Allow"
         Resource = [
-          "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.api.id}/*/*/*",
-          #"arn:aws:execute-api:us-east-1:*:a123456789/test/POST/mydemoresource/*",
+          "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*",
         ]
       },
     ]

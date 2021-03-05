@@ -58,7 +58,7 @@ module "lambda_sink_data" {
   allowed_triggers = {
     APIGatewayAny = {
       service    = "apigateway"
-      source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:${aws_api_gateway_rest_api.api.id}/*/*/*"
+      source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*",
     }
   }
 
