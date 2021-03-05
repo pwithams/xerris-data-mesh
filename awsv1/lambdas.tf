@@ -30,7 +30,7 @@ module "lambda_sink_data" {
 
   source_path = [
     {
-      path = "lambdas"
+      path = "${path.module}/lambdas"
       patterns = [
         "!.*",
         ".*\\.py",
@@ -83,7 +83,7 @@ module "lambda_layer_local" {
 
   source_path = [
     {
-      path             = "lambdas/layer",
+      path             = "${path.module}/lambdas/layer",
       pip_requirements = true
       prefix_in_zip    = "python/lib/python3.8/site-packages",
     }
