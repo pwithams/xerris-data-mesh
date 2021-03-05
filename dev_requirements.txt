@@ -1,0 +1,5 @@
+black
+pylint
+mypy
+coverage
+pycodestyle
