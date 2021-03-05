@@ -78,6 +78,16 @@ However, it can still be nice to automate this process, and so by setting `autom
 
 Note that the Python script uses `boto3` to create the bucket and so `python` must have access to this. If `python` does not point to python3.x you can specify `python_path = "python3"`. If you do not have Python or the required libraries available, you can disable automatic bucket creation and just manually create it instead.
 
+## Outputs
+
+The following outputs are currently available:
+
+ - `firehose_stream_names`
+ - `glue_table_names`
+ - `api_gateway_id`
+ - `api_gateway_deployment_url`
+ - `api_gateway_deployment_url_full`
+
 ## Posting data to the endpoint
 
 Once deployed, you can test out the deployment by using a tool such as Postman to send a test payload.

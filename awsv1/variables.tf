@@ -39,14 +39,14 @@ variable "automate_bucket_creation" {
 }
 
 variable "s3_executable_name" {
-  type  = string
-  default = "python"
+  type        = string
+  default     = "python"
   description = "The executable program required to run your custom S3 creation script"
 }
 
 variable "s3_creation_script" {
-  type = string
-  default = "${path.module}/create_s3_bucket.py"
+  type        = string
+  default     = "${path.module}/create_s3_bucket.py"
   description = "The file containing your custom S3 creation script - a Python script using boto3 is provided by default"
 }
 
