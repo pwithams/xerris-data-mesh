@@ -74,9 +74,20 @@ module "xerris_data_mesh" {
 
 When creating a bucket using Terraform, it will always be tied to the Terraform state. This is useful for most cases, but when using the bucket to store important data it poses the risk that the bucket may get deleted, such as when removing and reapplying the state. As a result, it is preferrable to keep the bucket decoupled from the infrastructure.
 
-However, it can still be nice to automate this process, and so by setting `automate_bucket_creation = true` a Python script will create a bucket with encryption for you. It is recommended to remove or set the statement to false once the bucket is created to avoid needlessly running the script each time.
+However, it can still be useful to automate this process, and so by setting `automate_bucket_creation = true` a Python script will create a bucket with encryption for you. It is recommended to remove or set the statement to false once the bucket is created to avoid needlessly running the script each time.
 
-Note that the Python script uses `boto3` to create the bucket and so `python` must have access to this. If `python` does not point to python3.x you can specify `python_path = "python3"`. If you do not have Python or the required libraries available, you can disable automatic bucket creation and just manually create it instead.
+Note that the Python script uses `boto3` to create the bucket and so `python` must have access to this. If `python` does not point to python3.x you can specify `s3_executable_name = "python3"`. If you do not have Python or the required libraries available, you can disable automatic bucket creation and just manually create it instead.
+
+You can also completely customize the creation script by providing `s3_executable_name` and `s3_creation_script`. For example:
+
+```hcl
+    # custom s3 script
+    s3_executable_name = "bash"
+    s3_creation_script = "create.sh"
+```
+
+Note that whatever script is used must output valid JSON to stdout. See the [docs](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/data_source) for more information.
+
 
 ## Outputs
 

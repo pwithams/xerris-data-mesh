@@ -1,5 +1,5 @@
 locals {
-  script_path = var.s3_creation_script == "" ? "${path.module}/create_s3_bucket.py" : var.s3_creation_script
+  script_path = var.s3_creation_script == "default" ? "${path.module}/create_s3_bucket.py" : var.s3_creation_script
 }
 
 data "external" "example" {
